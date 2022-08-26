@@ -1,7 +1,9 @@
 import dateutil.utils
-import weather
+from Services import weather, i2c
 import sqlite3
 from sqlite3 import Error
+from DTO import Measurement
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -16,6 +18,7 @@ def create_connection(db_file):
         print(e)
 
     return conn
+
 
 def create_measurement(conn, measurement):
     """
@@ -32,13 +35,27 @@ def create_measurement(conn, measurement):
 
     return cur.lastrowid
 
+
+def collect():
+    data = []
+    currentTemperature = weather.getCurrentTemperature()
+    entry = Measurement
+    data.append(currentTemperature)
+
+    return data
+
+
 def main():
     database = r"test.db"
-    currentTemperature = weather.getCurrentTemperature()
     conn = create_connection(database)
     with conn:
+        # Collect Data
+        values = collect()
+
+        # Write Data to DB
         weather_temp = (1, 'Outside', currentTemperature, dateutil.utils.today())
         create_measurement(conn, weather_temp)
+
 
 if __name__ == '__main__':
     main()
