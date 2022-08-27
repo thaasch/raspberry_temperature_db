@@ -31,7 +31,7 @@ class WeatherTemperatureWebParameters:
 
 
 class WeatherTemperatureWebClient(WeatherTemperatureClient):
-    url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units=metric";
+    url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units=metric"
 
     def get_current_temperature(self, **kwargs):
         parameters = WeatherTemperatureWebParameters(**kwargs)
