@@ -3,3 +3,7 @@ geopy == 2.2.0
 python_dotenv == 0.20.0
 requests == 2.25.1
 smbus == 1.1.post2
+
+python-dotenv~=0.20.0
+matplotlib~=3.5.3
+pandas~=1.4.3

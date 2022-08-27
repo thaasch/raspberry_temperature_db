@@ -27,7 +27,7 @@ class I2cTemperatureDeviceClient(WeatherTemperatureClient):
         return data
 
     def _read_temperature(self, address):
-        temperature = self._read_register(address, 0x00, 2)
+        temperature = self._read_register(address, registers.REG_TEMP, 2)
 
         if len(temperature) < 2:
             return None
