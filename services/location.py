@@ -1,10 +1,13 @@
-from geopy.geocoders import Nominatim
+import os
+import ssl
 from dataclasses import dataclass
 
-import geopy.geocoders
 import certifi
-import config
-import ssl
+import geopy.geocoders
+from dotenv import load_dotenv
+from geopy.geocoders import Nominatim
+
+load_dotenv()
 
 
 @dataclass
@@ -28,4 +31,5 @@ def get_location_from(location_name):
         code = locator.geocode(location_name)
         return Location(code.address, code.longitude, code.latitude)
     except:
-        return Location(config.FALLBACK_ADDRESS, config.FALLBACK_LONGITUDE, config.FALLBACK_LATITUDE)
+        return Location(os.getenv('FALLBACK_ADDRESS'), float(os.getenv('FALLBACK_LONGITUDE')),
+                        float(os.getenv('FALLBACK_LATITUDE')))

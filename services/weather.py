@@ -1,14 +1,15 @@
+import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from random import randint
 
-import dateutil.utils
+import datetime
 import requests
-
-import config
-import services.registers as registers
+from dotenv import load_dotenv
 
 from services.dto import Weather
+
+load_dotenv()
 
 
 class WeatherTemperatureClient(ABC):
@@ -19,7 +20,7 @@ class WeatherTemperatureClient(ABC):
 
 class WeatherTemperatureMockClient(WeatherTemperatureClient):
     def get_current_temperature(self, **kwargs):
-        return [Weather('TestData', randint(20, 30), dateutil.utils.today())]
+        return [Weather('TestData', randint(20, 30), datetime.datetime.now())]
 
 
 @dataclass
@@ -39,4 +40,4 @@ class WeatherTemperatureWebClient(WeatherTemperatureClient):
         data = response.json()
         main = data['main']
 
-        return Weather(config.LOCATION_NAME, main['temp'], dateutil.utils.today())
+        return Weather(os.getenv('LOCATION_NAME'), main['temp'], datetime.datetime.now())

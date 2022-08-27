@@ -1,10 +1,14 @@
+import os
 import sqlite3
 from sqlite3 import Error
 
-import config
+from dotenv import load_dotenv
+
 from services import location
 from services.i2c import I2cTemperatureDeviceClient
 from services.weather import WeatherTemperatureClient, WeatherTemperatureMockClient, WeatherTemperatureWebClient
+
+load_dotenv()
 
 
 def create_connection(db_file):
@@ -46,17 +50,19 @@ def main():
     conn = create_connection(database)
 
     location.initialize_location_context()
-    location_data = location.get_location_from(config.LOCATION_NAME)
+    location_data = location.get_location_from(os.getenv('LOCATION_NAME'))
 
     weather_web_client = WeatherTemperatureWebClient()
     weather_device_client: WeatherTemperatureClient
 
-    if config.DEBUG:
+    if os.getenv('DEBUG'):
         weather_device_client = WeatherTemperatureMockClient()
     else:
         weather_device_client = I2cTemperatureDeviceClient()
 
-    weather_data = weather_web_client.get_current_temperature(latitude=location_data.latitude, longitude=location_data.longitude, api_key=config.WEATHER_API_KEY)
+    weather_data = weather_web_client.get_current_temperature(latitude=location_data.latitude,
+                                                              longitude=location_data.longitude,
+                                                              api_key=os.getenv('WEATHER_API_KEY'))
     device_data = weather_device_client.get_current_temperature()
 
     with conn:
