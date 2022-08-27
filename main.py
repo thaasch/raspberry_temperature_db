@@ -1,8 +1,10 @@
-import dateutil.utils
-from services import weather
 import sqlite3
 from sqlite3 import Error
-from dto import measurement
+
+import config
+from services import location
+from services.i2c import I2cTemperatureDeviceClient
+from services.weather import WeatherTemperatureClient, WeatherTemperatureMockClient, WeatherTemperatureWebClient
 
 
 def create_connection(db_file):
@@ -28,32 +30,39 @@ def create_measurement(conn, measurement):
     :return:
     """
 
-    sql = "INSERT INTO MEASUREMENTS(ID, NAME,VALUE,TIMESTAMP) VALUES(?,?,?,?)"
+    sql = "INSERT INTO MEASUREMENTS(NAME,VALUE,TIMESTAMP) VALUES(?,?,?)"
     cur = conn.cursor()
-    cur.execute(sql, measurement)
+
+    print(measurement)
+
+    cur.execute(sql, tuple(measurement))
     conn.commit()
 
     return cur.lastrowid
 
 
-def collect():
-    data = []
-    current_temperature = weather.get_current_temperature()
-    entry = measurement(name='Outside', value=current_temperature, timestamp=dateutil.utils.today())
-    data.append(entry)
-
-    return data
-
-
 def main():
     database = r"test.db"
     conn = create_connection(database)
-    with conn:
-        # Collect Data
-        values = collect()
 
-        # Write Data to DB
-        create_measurement(conn, values)
+    location.initialize_location_context()
+    location_data = location.get_location_from(config.LOCATION_NAME)
+
+    weather_web_client = WeatherTemperatureWebClient()
+    weather_device_client: WeatherTemperatureClient
+
+    if config.DEBUG:
+        weather_device_client = WeatherTemperatureMockClient()
+    else:
+        weather_device_client = I2cTemperatureDeviceClient()
+
+    weather_data = weather_web_client.get_current_temperature(latitude=location_data.latitude, longitude=location_data.longitude, api_key=config.WEATHER_API_KEY)
+    device_data = weather_device_client.get_current_temperature()
+
+    with conn:
+        create_measurement(conn, weather_data)
+        for device in device_data:
+            create_measurement(conn, device)
 
 
 if __name__ == '__main__':

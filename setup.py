@@ -6,7 +6,7 @@ conn = sqlite3.connect('test.db')
 print("Opened database successfully")
 
 conn.execute('''CREATE TABLE MEASUREMENTS
-         (ID INT PRIMARY KEY    NOT NULL,
+         (ID INTEGER PRIMARY KEY,
          NAME           TEXT    NOT NULL,
          VALUE          FLOAT   NOT NULL,
          TIMESTAMP      DATE);''')
