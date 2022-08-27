@@ -2,7 +2,7 @@ import datetime
 import smbus
 
 import services.registers as registers
-from services.dto import Weather
+from services.dto import Measurement
 from services.weather import WeatherTemperatureClient
 
 
@@ -11,7 +11,7 @@ class I2cTemperatureDeviceClient(WeatherTemperatureClient):
         self.bus = smbus.SMBus(1)
 
     def get_current_temperature(self, **kwargs):
-        return [Weather(str(device), self._read_temperature(device), datetime.datetime.now()) for device in
+        return [Measurement(str(device), self._read_temperature(device), datetime.datetime.now()) for device in
                 enumerate(registers.DEVICES) if
                 self._configure_devices(registers.DEVICES, 12)]
 

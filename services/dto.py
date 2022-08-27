@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Weather:
+class Measurement:
     name: str
     temperature: float
     timestamp: datetime

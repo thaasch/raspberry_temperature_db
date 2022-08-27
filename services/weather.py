@@ -7,7 +7,7 @@ import datetime
 import requests
 from dotenv import load_dotenv
 
-from services.dto import Weather
+from services.dto import Measurement
 
 load_dotenv()
 
@@ -20,7 +20,7 @@ class WeatherTemperatureClient(ABC):
 
 class WeatherTemperatureMockClient(WeatherTemperatureClient):
     def get_current_temperature(self, **kwargs):
-        return [Weather('TestData', randint(20, 30), datetime.datetime.now())]
+        return [Measurement('TestData', randint(20, 30), datetime.datetime.now())]
 
 
 @dataclass
@@ -40,4 +40,4 @@ class WeatherTemperatureWebClient(WeatherTemperatureClient):
         data = response.json()
         main = data['main']
 
-        return Weather(os.getenv('LOCATION_NAME'), main['temp'], datetime.datetime.now())
+        return Measurement(os.getenv('LOCATION_NAME'), main['temp'], datetime.datetime.now())
