@@ -5,7 +5,7 @@ Simple python script to track temperatures from different devices on a Raspberry
 
 As a sensor I'm using a MCP9800. It's very precise while not using a lot of Power.
 
-I created my own PCB, but you can buy something similar here: I created my own PCB, but you can buy something similar here: https://www.reichelt.de/de/de/temperatur-sensor-click-board-mcp9800-mikroe-2979-p312254.html?r=1
+I created my own PCB, but you can buy something similar here: https://www.reichelt.de/de/de/temperatur-sensor-click-board-mcp9800-mikroe-2979-p312254.html?r=1
 
 
 ## Setup
